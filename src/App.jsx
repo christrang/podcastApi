@@ -1,35 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import 'bulma/css/bulma.css'; // Import Bulma CSS
+import './App.css'; // Import your custom styles if needed
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [podcasts, setPodcasts] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch('https://podcastsapi.herokuapp.com/podcasts/top');
+        if (response.ok) {
+          const data = await response.json();
+          setPodcasts(data);
+        } else {
+          console.error('Error fetching podcast data:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching podcast data:', error);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="section">
+        <div className="columns is-multiline">
+          {podcasts.map((podcast) => (
+            <div key={podcast.id} className="column is-one-quarter">
+              <div className="card is-fullheight">
+                <div className="card-image">
+                  <figure className="image">
+                    <img src={podcast.artworkUrl} alt={podcast.name} />
+                  </figure>
+                </div>
+                <div className="card-content has-text-centered" style={{ flexGrow: 1 }}>
+                  <p className="title is-4">{podcast.name}</p>
+                  <p className="subtitle is-6">{podcast.artist}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <footer>
+          Matricule: e1234567
+        </footer>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  );
 }
 
-export default App
+export default App;

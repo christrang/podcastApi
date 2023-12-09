@@ -32,6 +32,8 @@ function Login() {
                 setMessage(data.message);
                 localStorage.setItem('token', data.token);
                 console.log(data.token);
+                console.log('Response Data:', data);
+                console.log('Stored Token:', localStorage.getItem('token'));
                 navigate('/subscriptions');
             }
 

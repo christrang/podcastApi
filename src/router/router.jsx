@@ -5,6 +5,7 @@ import NoMatch from "../NoMatch.jsx";
 import Root from "../Root.jsx";
 import Login from "../Login.jsx";
 import SignUp from "../SignUp.jsx";
+import Profile from "../Profile.jsx";
 //import Subscription from "../Subscription.jsx";
 
 const Router = createBrowserRouter([
@@ -17,6 +18,7 @@ const Router = createBrowserRouter([
         //{path: "/podcast/:id", element: <DetailsPodcast />},
         {path: "/login", element: <Login />},
         {path: "/signUp", element: <SignUp />},
+        {path: "/profile", element: <Profile />},
         //{path: "/subscriptions", element: <Subscription />}
       ]},
   ]);

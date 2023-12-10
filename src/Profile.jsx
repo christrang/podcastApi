@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function UpdateProfile() {
   const authToken = localStorage.getItem("token");
@@ -12,6 +13,9 @@ function UpdateProfile() {
   const [isValid, setIsValid] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchEmail() {
@@ -128,6 +132,37 @@ function UpdateProfile() {
     }
   };
 
+  const handleDeleteUser = async () => {
+    setLoading(true);
+    setError(false);
+
+    try {
+      const response = await fetch("https://podcastsapi.herokuapp.com/user", {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        setError(true);
+        setPasswordMessage(data.error);
+      } else {
+        localStorage.removeItem("token");
+        navigate("/");
+      }
+
+      setLoading(false);
+    } catch (error) {
+      setError(true);
+      setPasswordMessage(error.message);
+      setLoading(false);
+    }
+  };
+
   const renderValidationMessage = (message, requirements) => {
     return (
       <div>
@@ -202,21 +237,55 @@ function UpdateProfile() {
               </div>
 
               <div className="field is-grouped is-grouped-centered">
-                <p className="control">
-                  <button
-                    type="submit"
-                    className="button is-primary"
-                    disabled={!isValid || loading}
-                  >
-                    {loading ? "Updating profile..." : "Update Profile"}
-                  </button>
-                </p>
-                <p className="control">
-                  <Link to="/" className="button is-danger">
-                    Cancel
-                  </Link>
-                </p>
+              <p className="control">
+                <button type="submit" className="button is-primary" disabled={!isValid || loading}>
+                  {loading ? "Updating profile..." : "Update Profile"}
+                </button>
+              </p>
+              <p className="control">
+                <button
+                  className="button is-danger"
+                  onClick={() => setDeleteModalOpen(true)}
+                  disabled={loading}
+                >
+                  Delete Account
+                </button>
+              </p>
+              <p className="control">
+                <Link to="/" className="button is-danger">
+                  Cancel
+                </Link>
+              </p>
+            </div>
+
+            {/* Delete Account Modal */}
+            {isDeleteModalOpen && (
+              <div className="modal is-active">
+                <div className="modal-background" onClick={() => setDeleteModalOpen(false)}></div>
+                <div className="modal-content">
+                  <div className="box">
+                    <p className="has-text-centered">Are you sure you want to delete your account?</p>
+                    <div className="field is-grouped is-grouped-centered mt-3">
+                      <p className="control">
+                        <button className="button is-danger" onClick={handleDeleteUser} disabled={loading}>
+                          Confirm
+                        </button>
+                      </p>
+                      <p className="control">
+                        <button className="button" onClick={() => setDeleteModalOpen(false)} disabled={loading}>
+                          Cancel
+                        </button>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  className="modal-close is-large"
+                  aria-label="close"
+                  onClick={() => setDeleteModalOpen(false)}
+                ></button>
               </div>
+            )}
             </form>
           </div>
         </div>

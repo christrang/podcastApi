@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import 'bulma/css/bulma.css';
 import './App.css';
+import { Link } from 'react-router-dom';
 
 function App() {
   const [podcasts, setPodcasts] = useState([]);
@@ -44,22 +45,24 @@ function App() {
         </div>
         <div className="columns is-multiline">
           {podcasts.map((podcast) => (
-            <div key={podcast.id} className="column is-one-quarter">
-              <div className="card is-fullheight">
-                <div className="card-image">
-                  <figure className="image">
-                    <img src={podcast.artworkUrl} alt={podcast.name} />
-                  </figure>
-                </div>
-                <div className="card-content has-text-centered" style={{ flexGrow: 1 }}>
-                  <div>
-                    <p className="title is-4">{podcast.name}</p>
+            <div className="column is-one-quarter" key={podcast.id}>
+              <Link to={`/podcasts/${podcast.podcastId}`}>
+                <div className="card is-fullheight">
+                  <div className="card-image">
+                    <figure className="image">
+                      <img src={podcast.artworkUrl} alt={podcast.name} />
+                    </figure>
                   </div>
-                  <div style={{ marginTop: '25%' }}>
-                    <p className="subtitle is-6">{podcast.artist}</p>
+                  <div className="card-content has-text-centered" style={{ flexGrow: 1 }}>
+                    <div>
+                      <p className="title is-4">{podcast.name}</p>
+                    </div>
+                    <div style={{ marginTop: '25%' }}>
+                      <p className="subtitle is-6">{podcast.artist}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </div>
           ))}
         </div>

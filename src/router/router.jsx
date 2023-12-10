@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App.jsx";
-//import DetailsPodcast from "../DetailsPodcast.jsx";
+import DetailsPodcast from "../DetailsPodcast.jsx";
 import NoMatch from "../NoMatch.jsx";
 import Root from "../Root.jsx";
 import Login from "../Login.jsx";
@@ -15,7 +15,7 @@ const Router = createBrowserRouter([
       errorElement: <NoMatch />,
       children: [
         {path: "/", element: <App />},
-        //{path: "/podcast/:id", element: <DetailsPodcast />},
+        {path: "/podcasts/:id", element: <DetailsPodcast />},
         {path: "/login", element: <Login />},
         {path: "/signUp", element: <SignUp />},
         {path: "/profile", element: <Profile />},

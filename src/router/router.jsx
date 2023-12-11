@@ -6,7 +6,7 @@ import Root from "../Root.jsx";
 import Login from "../Login.jsx";
 import SignUp from "../SignUp.jsx";
 import Profile from "../Profile.jsx";
-//import Subscription from "../Subscription.jsx";
+import Subscription from "../Subscription.jsx";
 
 const Router = createBrowserRouter([
     {
@@ -19,7 +19,7 @@ const Router = createBrowserRouter([
         {path: "/login", element: <Login />},
         {path: "/signUp", element: <SignUp />},
         {path: "/profile", element: <Profile />},
-        //{path: "/subscriptions", element: <Subscription />}
+        {path: "/subscriptions", element: <Subscription />}
       ]},
   ]);
   

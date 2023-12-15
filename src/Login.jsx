@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -32,8 +32,6 @@ function Login() {
                 setMessage(data.message);
                 localStorage.setItem('token', data.token);
                 console.log(data.token);
-                console.log('Response Data:', data);
-                console.log('Stored Token:', localStorage.getItem('token'));
                 navigate('/subscriptions');
             }
 
@@ -44,6 +42,63 @@ function Login() {
             setLoading(false);
         }
     }
+
+    const handleGoogleLogin = (async (smtg) => {
+        setLoading(true);
+        setError(false);
+        setMessage('');
+    
+        try {
+            const body = { credential: smtg.credential };
+    
+            const response = await fetch('https://podcastsapi.herokuapp.com/auth/tokenFromGoogleLogin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ body })
+            });
+    
+            const data = await response.json();
+    
+            if (data.error) {
+                setError(true);
+                setMessage(data.error);
+            } else {
+                setMessage(data.message);
+                localStorage.setItem('token', data.token);
+                console.log(data.token);
+                navigate('/subscriptions');
+            }
+            setLoading(false);
+        } catch (error) {
+            setError(true);
+            setMessage(error.message);
+            setLoading(false);
+        }
+    });
+    
+    useEffect(() => {
+        if (window.gapi) {
+            window.gapi.load('auth2', () => {
+              window.gapi.auth2.init({
+                client_id: '660418432193-q2b1ig5la4og1pk2m3i2m9t0ttu858mo.apps.googleusercontent.com',
+              });
+            });
+          } else {
+            console.error('Google API script not loaded');
+          }
+    
+        google.accounts.id.initialize({
+            client_id: "660418432193-q2b1ig5la4og1pk2m3i2m9t0ttu858mo.apps.googleusercontent.com",
+            callback: handleGoogleLogin,
+        });
+    
+        google.accounts.id.renderButton(
+            document.getElementById("buttonDiv"),
+            { theme: "outline", size: "large" }
+        );
+    }, [handleGoogleLogin]);
+    
+        
 
     return (
         <div className="hero is-fullheight">
@@ -88,6 +143,18 @@ function Login() {
                                     <Link to="/" className="button is-danger">
                                         Cancel
                                     </Link>
+                                </p>
+                            </div>
+
+                            <div className="field is-grouped is-grouped-centered">
+                                <p className="control">
+                                    <button
+                                        type="button"
+                                        id="buttonDiv"
+                                        onClick={handleGoogleLogin}
+                                    >
+                                        {loading ? 'Logging in...' : 'Sign in with Google'}
+                                    </button>
                                 </p>
                             </div>
                         </form>
